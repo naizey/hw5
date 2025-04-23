@@ -17,7 +17,8 @@ using namespace std;
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
 {
     set<string> results;
-    findWord(in, 0, floating, dict, results);
+    string current = in;
+    findWord(current, 0, floating, dict, results);
     return results;
 }
 
@@ -54,7 +55,7 @@ void findWord(string current, int index, string floating, const set<string>& dic
         }
     }
 
-    if((int)floating.size() > dashes_left)
+    if(floating.size() > (size_t)dashes_left)
     {
         return;
     }
@@ -62,15 +63,19 @@ void findWord(string current, int index, string floating, const set<string>& dic
     //guess dash letters by putting in floating letters 
     for(size_t i = 0; i < floating.size(); ++i) 
     {
-        char c = floating[i];
-        current[index] = c; //set letter to the first floating
-        string next = floating; //save the floating letters
-        next.erase(i, 1); //remove the letter used in floating
+        if(i > 0 && floating[i] == floating[i-1])
+        {
+            continue;
+        }
+
+        current[index] = floating[i]; //set letter to the first floating
+        string next = floating.substr(0, i) + floating.substr(i+1); //save the floating letters
         findWord(current, index + 1, next, dict, results); //feed in next as the floating argument
+        current[index] = '-';
     }
 
     // Try placing non-floating letters
-    if((int)floating.size() < dashes_left)
+    if(floating.size() < (size_t)dashes_left)
     {
         for (char c = 'a'; c <= 'z'; ++c) 
         {
@@ -80,6 +85,7 @@ void findWord(string current, int index, string floating, const set<string>& dic
             }
             current[index] = c;
             findWord(current, index + 1, floating, dict, results);
+            current[index] = '-'; //reset the current letter
         }
     }
 }
