@@ -17,45 +17,54 @@ using namespace std;
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
 {
     set<string> results;
+
+    set<string> dictCopy;
+    for(set<string>::iterator it = dict.begin(); it != dict.end(); ++it)
+    {
+        if(it->length() == in.length())
+        {
+            dictCopy.insert(*it);
+        }
+    }
     string current = in;
-    findWord(current, 0, floating, dict, results);
+    findWord(in, current, 0, floating, dictCopy, results);
     return results;
 }
 
-void findWord(string current, int index, string floating, const set<string>& dict, set<string>& results)
+void findWord(const string& input, string& current, size_t index, const string& floating, const set<string>& dict, set<string>& results)
 {
     //base case - word has all letters found (floating letters are used)
-    if(index == current.size()) 
+    if(index == input.size()) 
     {
         //if all the floating letters are used and if current is a valid word
-        if(floating.empty() && dict.find(current) != dict.end()) 
+        if(dict.find(current) != dict.end())
         {
-            //add to results
             results.insert(current);
         }
         return;
     }
 
     //if the letter is fixed, doesn't have a dash
-    if(current[index] != '-') 
+    if(input[index] != '-') 
     {
+        current[index] = input[index];
         //go to next letter
-        findWord(current, index + 1, floating, dict, results);
+        findWord(input, current, index + 1, floating, dict, results);
         return;
     }
 
     //keep track of dashes left till end
-    int dashes_left = 0;
-    for(size_t i = index; i < current.size(); ++i)
+    size_t dashes_left = 0;
+    for(size_t i = index; i < input.size(); ++i)
     {
         //increase dash count if on a dash "letter"
-        if(current[i] == '-')
+        if(input[i] == '-')
         {
             dashes_left++;
         }
     }
 
-    if(floating.size() > (size_t)dashes_left)
+    if(floating.size() > dashes_left)
     {
         return;
     }
@@ -70,12 +79,11 @@ void findWord(string current, int index, string floating, const set<string>& dic
 
         current[index] = floating[i]; //set letter to the first floating
         string next = floating.substr(0, i) + floating.substr(i+1); //save the floating letters
-        findWord(current, index + 1, next, dict, results); //feed in next as the floating argument
-        current[index] = '-';
+        findWord(input, current, index + 1, next, dict, results); //feed in next as the floating argument
     }
 
     // Try placing non-floating letters
-    if(floating.size() < (size_t)dashes_left)
+    if(floating.size() < dashes_left)
     {
         for (char c = 'a'; c <= 'z'; ++c) 
         {
@@ -85,7 +93,8 @@ void findWord(string current, int index, string floating, const set<string>& dic
             }
             current[index] = c;
             findWord(current, index + 1, floating, dict, results);
-            current[index] = '-'; //reset the current letter
         }
     }
+
+    current[index] = '-'; //reset the current letter
 }
