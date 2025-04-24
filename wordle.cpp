@@ -44,8 +44,8 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         return; //added a return to kick out
     }
 
-    // else 
-    // {
+    else 
+    {
         //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
         int num_dashes = 0;
         for(char dash : input)
@@ -73,6 +73,6 @@ void findWord(int index, string input, string& floating, const set<string>& dict
                 findWord(index + 1, input, floating, dict, results); //recurse again
             }
         }
-    //}
+    }
     
 }
