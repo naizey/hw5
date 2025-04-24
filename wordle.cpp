@@ -51,7 +51,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         for(char dash : input)
         {
             //increment the number of dashes in "in"
-            num_dashes += (dash == '-') ? 1 : 0;
+            num_dashes += (int)(dash == '-');
         }
 
         //guess dash letters by putting in floating letters 
@@ -69,13 +69,8 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         {
             for(char c = 'a'; c <= 'z'; ++c) //now guess through alphabet, since its not a floating letter
             {
-                if(floating.find(c) != std::string::npos) //dont guess a letter thats in floating (or what is left of it)
-                {
-                    continue;
-                }
-                std::string nextIn;
-                nextIn[index] = c; //guess the letter
-                findWord(index + 1, nextIn, floating, dict, results); //recurse again
+                input[index] = c; //guess the letter
+                findWord(index + 1, input, floating, dict, results); //recurse again
             }
         }
     //}
