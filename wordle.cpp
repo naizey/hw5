@@ -25,7 +25,7 @@ set<string> wordle(const string& in, const string& floating, const set<string>& 
     return results; 
 }
 
-void findWord(unsigned int index, std::string input, const std::string floating, const std::set<std::string>& dict, std::set<std::string>& results)
+void findWord(unsigned int index, std::string input, std::string floating, const std::set<std::string>& dict, std::set<std::string>& results)
 {
     //base case - word has all letters found (floating letters are used)
     if(index == input.size()) 
