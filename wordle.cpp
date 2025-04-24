@@ -71,6 +71,10 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         {
             for(char c = 'a'; c <= 'z'; ++c) //now guess through alphabet, since its not a floating letter
             {
+                if(floating.find(c) != std::string::npos) //dont guess a letter thats in floating (or what is left of it)
+                {
+                    continue;
+                }
                 input[index] = c; //guess the letter
                 findWord(index + 1, input, floating, dict, results); //recurse again
             }
