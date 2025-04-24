@@ -74,7 +74,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
                     continue;
                 }
                 std::string nextIn;
-                nextIn[index] = c //guess the letter
+                nextIn[index] = c; //guess the letter
                 findWord(index + 1, nextIn, floating, dict, results); //recurse again
             }
         }
