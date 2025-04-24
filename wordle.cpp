@@ -13,6 +13,8 @@ using namespace std;
 
 
 // Add prototypes of helper functions here
+void findWord(unsigned int index, std::string input, std::string floating, const std::set<std::string>& dict, std::set<std::string>& results);
+int numDashes(const std::string& word);
 
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
 {
@@ -69,7 +71,7 @@ void findWord(unsigned int index, std::string input, std::string floating, const
         }
 
         //condition is necessary to make efficient
-        if(numDahes(input) >= floating.length()) //if there are more dashes than letters left to guess from...
+        if(numDashes(input) >= floating.length()) //if there are more dashes than letters left to guess from...
         {
             for(int c = (int)'a'; c <= (int)'z'; c++) //now guess through alphabet, since its not a floating letter
             {
