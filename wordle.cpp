@@ -41,11 +41,11 @@ void findWord(int index, string input, string& floating, const set<string>& dict
     {
         //go to next letter
         findWord(input, index + 1, floating, dict, results);
-        //return; //added a return to kick out
+        return; //added a return to kick out
     }
 
-    else 
-    {
+    //else 
+    //{
         //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
         int num_dashes = 0;
         for(char dash : input)
@@ -55,7 +55,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         }
 
         //guess dash letters by putting in floating letters 
-        for(int i = 0; i < floating.length(); ++i) 
+        for(size_t i = 0; i < floating.length(); ++i) 
         {
             //try first floating letter
             input[index] = floating[i]; //set letter to the first floating
@@ -73,10 +73,11 @@ void findWord(int index, string input, string& floating, const set<string>& dict
                 {
                     continue;
                 }
-                input[index] = c; //guess the letter
-                findWord(index + 1, input, floating, dict, results); //recurse again
+                std::string nextIn;
+                nextIn[index[ = c]] //guess the letter
+                findWord(index + 1, nextIn, floating, dict, results); //recurse again
             }
         }
-    }
+    //}
     
 }
