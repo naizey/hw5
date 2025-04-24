@@ -13,7 +13,7 @@ using namespace std;
 
 
 // Add prototypes of helper functions here
-void findWord(unsigned int index, std::string input, std::multiset<char> floating, const std::set<std::string>& dict, std::set<std::string>& results, size_t dash_count);
+void findWord(std::string input, std::multiset<char> floating, const std::set<std::string>& dict, std::set<std::string>& results, size_t dash_count);
 int numDashes(const std::string& word);
 
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
@@ -23,17 +23,18 @@ set<string> wordle(const string& in, const string& floating, const set<string>& 
     //convert floating string to multiset 
     std::multiset<char> float_set(floating.begin(), floating.end());
     //std::string floats = floating; //send in a copy of floating letters
+
     size_t dash_count = 0;
     //finding all dashes in the input string
     for(int num = 0; num < input.length(); num++)
     {
         if(input[num] == '-') dash_count++;
     }
-    findWord(0, input, float_set, dict, results, dash_count); //pass in index, 
+    findWord(input, float_set, dict, results, dash_count); //pass in index, 
     return results; 
 }
 
-void findWord(unsigned int index, std::string input, std::multiset<char> floating, const std::set<std::string>& dict, std::set<std::string>& results, size_t dash_count)
+void findWord(std::string input, std::multiset<char> floating, const std::set<std::string>& dict, std::set<std::string>& results, size_t dash_count)
 {
     //check for if the floating is greater than numdashes
     if(floating.size() > dash_count)
@@ -41,7 +42,7 @@ void findWord(unsigned int index, std::string input, std::multiset<char> floatin
         return;
     }
     //base case - word has all letters found (floating letters are used)
-    if(index == input.size()) 
+    if(input.find('-') == string::npos) //if there is no dash in string
     {
         //if all the floating letters are used and if current is a valid word
         if(floating.size() == 0 && dict.find(input) != dict.end()) 
@@ -52,16 +53,16 @@ void findWord(unsigned int index, std::string input, std::multiset<char> floatin
         return;
     }
 
-    //if the letter is fixed, IE doesn't have a dash
-    if(input[index] != '-') 
-    {
-        //go to next letter
-        findWord(index + 1, input, floating, dict, results); //decrease problem size
-        //return; //added a return to kick out
-    }
+    // //if the letter is fixed, IE doesn't have a dash
+    // if(input[index] != '-') 
+    // {
+    //     //go to next letter
+    //     findWord(index + 1, input, floating, dict, results, dash_count); //decrease problem size
+    //     //return; //added a return to kick out
+    // }
 
-    else 
-    {
+    // else 
+    // {
         //size_t num = 0; //count the number of dashes 
         //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
 
@@ -74,6 +75,7 @@ void findWord(unsigned int index, std::string input, std::multiset<char> floatin
         //guess dash letters by putting in floating letters 
         bool deleted = false;
         dash_count--;
+        int index = input.find('-'); //find the first dash
         for(char c = 'a'; c <= 'z'; c++)
         {
             deleted = false;
@@ -84,7 +86,7 @@ void findWord(unsigned int index, std::string input, std::multiset<char> floatin
                 floating.erase(floating.find(c)); 
                 deleted = true;
             }
-            findWord(index + 1, input, floating, dict, results); //feed in next as the floating argument
+            findWord(input, floating, dict, results, dash_count); //feed in next as the floating argument
 
             if(deleted)
             {
@@ -93,7 +95,18 @@ void findWord(unsigned int index, std::string input, std::multiset<char> floatin
         }
         return; 
 
-        // for (std::multiset<char>::iterator it = floating.begin(); it != floating.end(); ++it) 
+        // }
+
+    
+}
+
+
+
+
+
+
+
+ // for (std::multiset<char>::iterator it = floating.begin(); it != floating.end(); ++it) 
         // {
         //     char c = *it; //current floating letter we want to guess with 
         //     input[index] = c; //try placing the floating letter in the current dash
@@ -114,10 +127,6 @@ void findWord(unsigned int index, std::string input, std::multiset<char> floatin
         //         input[index] = c; //guess the letter
         //         findWord(index + 1, input, floating, dict, results); //recurse again
         //     }
-        }
-
-    
-}
 
 
 
