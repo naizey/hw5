@@ -49,10 +49,10 @@ void findWord(int index, std::string input, std::string floating, const set<stri
     {
         //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
         int num_dashes = 0;
-        for(char dash : input)
+        for(int i = 0; i < input.length(); i++)
         {
             //increment the number of dashes in "in"
-            num_dashes += (int)(dash == '-');
+            num_dashes += (int)(input[i] == '-');
         }
 
         //guess dash letters by putting in floating letters 
