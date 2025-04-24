@@ -17,7 +17,7 @@ using namespace std;
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
 {
     set<string> results; //init return set
-    std::string input = in; //send in a copy 
+    std::string input = in; //send in a copy of string
     findWord(0, input, floating, dict, results); //pass in index, 
     return results; 
 }
@@ -28,7 +28,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
     if(index == input.size()) 
     {
         //if all the floating letters are used and if current is a valid word
-        if(floating.empty() && dict.find(input) != dict.end()) 
+        if(floating.length() == 0 && dict.find(input) != dict.end()) 
         {
             //add to results
             results.insert(input);
@@ -41,23 +41,21 @@ void findWord(int index, string input, string& floating, const set<string>& dict
     {
         //go to next letter
         findWord(input, index + 1, floating, dict, results);
+        //return; //added a return to kick out
     }
 
     else 
     {
         //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
         int num_dashes = 0;
-        for(int i = 0; i < input.size(); ++i)
+        for(char dash : input)
         {
             //increment the number of dashes in "in"
-            if(input[i] == '-')
-            {
-                num_dashes++;
-            }
+            num_dashes += (dash == '-') ? 1 : 0;
         }
 
         //guess dash letters by putting in floating letters 
-        for(int i = 0; i < floating.size(); ++i) 
+        for(int i = 0; i < floating.length(); ++i) 
         {
             //try first floating letter
             input[index] = floating[i]; //set letter to the first floating
@@ -67,7 +65,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         }
 
         //condition is necessary to make efficient
-        if(num_dashes > floating.size()) //if there are more dashes than letters left to guess from...
+        if(num_dashes > floating.length()) //if there are more dashes than letters left to guess from...
         {
             for(char c = 'a'; c <= 'z'; ++c) //now guess through alphabet, since its not a floating letter
             {
