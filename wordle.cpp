@@ -16,73 +16,64 @@ using namespace std;
 
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
 {
-    set<string> results;
-
-    std::string current = in; //send in a copy 
-    findWord(0, current, floating, dict, results); //pass in index, 
-    return results;
+    set<string> results; //init return set
+    std::string input = in; //send in a copy 
+    findWord(0, input, floating, dict, results); //pass in index, 
+    return results; 
 }
 
-void findWord(int index, string current, string floating, const set<string>& dict, set<string>& results)
+void findWord(int index, string input, string& floating, const set<string>& dict, set<string>& results)
 {
     //base case - word has all letters found (floating letters are used)
-    if(index == current.size()) 
+    if(index == input.size()) 
     {
         //if all the floating letters are used and if current is a valid word
-        if(floating.empty() && dict.find(current) != dict.end()) 
+        if(floating.empty() && dict.find(input) != dict.end()) 
         {
             //add to results
-            results.insert(current);
+            results.insert(input);
         }
         return;
     }
 
-    //if the letter is fixed, doesn't have a dash
-    if(current[index] != '-') 
+    //if the letter is fixed, IE doesn't have a dash
+    if(input[index] != '-') 
     {
         //go to next letter
-        findWord(current, index + 1, floating, dict, results);
+        findWord(input, index + 1, floating, dict, results);
     }
 
-    //keep track of dashes left till end
-    int dashes_left = 0;
-    for(size_t i = index; i < current.size(); ++i)
+    else 
     {
-        //increase dash count if on a dash "letter"
-        if(current[i] == '-')
+        //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
+        int num_dashes = 0;
+        for(int i = 0; i < input.size(); ++i)
         {
-            dashes_left++;
+            //increment the number of dashes in "in"
+            if(input[i] == '-')
+            {
+                num_dashes++;
+            }
         }
-    }
 
-    else //
-    {
-        //sort the floating letters 
-        std::sort(floating.begin(), floating.end());
         //guess dash letters by putting in floating letters 
-        for(size_t i = 0; i < floating.size(); ++i) 
+        for(int i = 0; i < floating.size(); ++i) 
         {
-            if(i > 0 && floating[i] == floating[i-1])
-            {
-                continue;
-            }
-
-            current[index] = floating[i]; //set letter to the first floating
-            string next = floating.substr(0, i) + floating.substr(i+1); //save the floating letters
-            findWord(current, index + 1, next, dict, results); //feed in next as the floating argument
-            current[index] = '-';
+            //try first floating letter
+            input[index] = floating[i]; //set letter to the first floating
+            //get the rest of the letters
+            std::string next = floating.substr(0, i) + floating.substr(i + 1); //save the floating letters
+            findWord(index + 1, input, next, dict, results); //feed in next as the floating argument
         }
 
-
-        for (char c = (int)'a'; c <= (int)'z'; ++c) 
+        //condition is necessary to make efficient
+        if(num_dashes > floating.size()) //if there are more dashes than letters left to guess from...
         {
-            if(floating.find(c) != string::npos) 
+            for(char c = 'a'; c <= 'z'; ++c) //now guess through alphabet, since its not a floating letter
             {
-                continue; //don't use floating again
+                input[index] = c; //guess the letter
+                findWord(index + 1, input, floating, dict, results); //recurse again
             }
-            current[index] = c;
-            findWord(current, index + 1, floating, dict, results);
-            current[index] = '-'; //reset the current letter
         }
     }
     
