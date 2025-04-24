@@ -33,7 +33,7 @@ int numDashes(const std::string& word)
     return num;
 }
 
-void findWord(unsigned int index, std::string input, std::string floating, const set<string>& dict, std::set<std::string>& results)
+void findWord(unsigned int index, std::string input, std::string floating, const std::set<std::string>& dict, std::set<std::string>& results)
 {
     //base case - word has all letters found (floating letters are used)
     if(index == input.size()) 
@@ -65,7 +65,7 @@ void findWord(unsigned int index, std::string input, std::string floating, const
             input[index] = floating[i]; //try first floating letter
             // //get the rest of the letters
             std::string new_floats = floating.substr(0, i) + floating.substr(i + 1); //save the floating letters
-            findWord(index + 1, next, new_floats, dict, results); //feed in next as the floating argument
+            findWord(index + 1, input, new_floats, dict, results); //feed in next as the floating argument
         }
 
         //condition is necessary to make efficient
