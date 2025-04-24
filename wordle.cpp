@@ -42,7 +42,7 @@ void findWord(int index, std::string input, std::string floating, const set<stri
     {
         //go to next letter
         findWord(input, index + 1, floating, dict, results);
-        return; //added a return to kick out
+        //return; //added a return to kick out
     }
 
     else 
@@ -68,9 +68,9 @@ void findWord(int index, std::string input, std::string floating, const set<stri
         //condition is necessary to make efficient
         if(num_dashes >= floating.length()) //if there are more dashes than letters left to guess from...
         {
-            for(char c = 'a'; c <= 'z'; c++) //now guess through alphabet, since its not a floating letter
+            for(int c = (int)'a'; c <= (int)'z'; c++) //now guess through alphabet, since its not a floating letter
             {
-                input[index] = c; //guess the letter
+                input[index] = char(c); //guess the letter
                 findWord(index + 1, input, floating, dict, results); //recurse again
             }
         }
