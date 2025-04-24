@@ -44,8 +44,8 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         return; //added a return to kick out
     }
 
-    //else 
-    //{
+    // else 
+    // {
         //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
         int num_dashes = 0;
         for(char dash : input)
@@ -65,7 +65,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         }
 
         //condition is necessary to make efficient
-        if(num_dashes > floating.length()) //if there are more dashes than letters left to guess from...
+        if(num_dashes >= floating.length()) //if there are more dashes than letters left to guess from...
         {
             for(char c = 'a'; c <= 'z'; ++c) //now guess through alphabet, since its not a floating letter
             {
@@ -74,7 +74,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
                     continue;
                 }
                 std::string nextIn;
-                nextIn[index[ = c]] //guess the letter
+                nextIn[index] = c //guess the letter
                 findWord(index + 1, nextIn, floating, dict, results); //recurse again
             }
         }
