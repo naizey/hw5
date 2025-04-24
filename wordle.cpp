@@ -16,13 +16,14 @@ using namespace std;
 
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
 {
-    set<string> results; //init return set
+    std::set<std::string> results; //init return set
     std::string input = in; //send in a copy of string
-    findWord(0, input, floating, dict, results); //pass in index, 
+    std::string floats = floating; //send in a copy of floating letters
+    findWord(0, input, floats, dict, results); //pass in index, 
     return results; 
 }
 
-void findWord(int index, string input, string& floating, const set<string>& dict, set<string>& results)
+void findWord(int index, std::string input, std::string floating, const set<string>& dict, std::set<std::string>& results)
 {
     //base case - word has all letters found (floating letters are used)
     if(index == input.size()) 
@@ -55,7 +56,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         }
 
         //guess dash letters by putting in floating letters 
-        for(size_t i = 0; i < floating.length(); ++i) 
+        for(int i = 0; i < floating.length(); i++) 
         {
             //try first floating letter
             input[index] = floating[i]; //set letter to the first floating
@@ -67,7 +68,7 @@ void findWord(int index, string input, string& floating, const set<string>& dict
         //condition is necessary to make efficient
         if(num_dashes >= floating.length()) //if there are more dashes than letters left to guess from...
         {
-            for(char c = 'a'; c <= 'z'; ++c) //now guess through alphabet, since its not a floating letter
+            for(char c = 'a'; c <= 'z'; c++) //now guess through alphabet, since its not a floating letter
             {
                 input[index] = c; //guess the letter
                 findWord(index + 1, input, floating, dict, results); //recurse again
