@@ -51,44 +51,69 @@ void findWord(unsigned int index, std::string input, std::multiset<char> floatin
 
     else 
     {
-        size_t num = 0; //count the number of dashes 
+        //size_t num = 0; //count the number of dashes 
         //count the number of dashes to reduce the amount of letters guessed, no wasted checks)
 
-
+//try all letters
+//check if letter is in multiset
+//if it is, erase it from the multiset
+//do recursive call 
+//if you erased smthn from floating set
+//put it back in the multiset
         //guess dash letters by putting in floating letters 
-        for (std::multiset<char>::iterator it = floating.begin(); it != floating.end(); ++it) 
+        bool deleted = false;
+        for(char c = 'a'; c <= 'z'; c++)
         {
-            char c = *it; // Get the current floating letter
-            input[index] = c; // Try placing the floating letter in the current dash
-
-            //input[index] = floating[i]; //try first floating letter
-            // //get the rest of the letters
-            //std::string new_floats = floating.substr(0, i) + floating.substr(i + 1); //save the floating letters
-            std::multiset<char> new_floats = floating; // Create a copy of the multiset
-            new_floats.erase(new_floats.find(c)); // Remove one occurrence of the character
-            findWord(index + 1, input, new_floats, dict, results); //feed in next as the floating argument
-        }
-
-        //condition is necessary to make efficient
-        if(numDashes(input) >= floating.size()) //if there are more dashes than letters left to guess from...
-        {
-            for(char c = 'a'; c <= 'z'; c++) //now guess through alphabet, since its not a floating letter
+            deleted = false;
+            input[index] = c; //guess the letter
+            if(floating.find(c) != floating.end()) //letter is in the floating set
             {
-                input[index] = c; //guess the letter
-                findWord(index + 1, input, floating, dict, results); //recurse again
+                //erase from floating set
+                floating.erase(floating.find(c)); 
+                deleted = true;
+            }
+            findWord(index + 1, input, floating, dict, results); //feed in next as the floating argument
+
+            if(deleted)
+            {
+                floating.insert(c);
             }
         }
-    }
+        return; 
+
+        // for (std::multiset<char>::iterator it = floating.begin(); it != floating.end(); ++it) 
+        // {
+        //     char c = *it; //current floating letter we want to guess with 
+        //     input[index] = c; //try placing the floating letter in the current dash
+
+        //     //input[index] = floating[i]; //try first floating letter
+        //     // //get the rest of the letters
+        //     //std::string new_floats = floating.substr(0, i) + floating.substr(i + 1); //save the floating letters
+        //     std::multiset<char> new_floats = floating; // Create a copy of the multiset
+        //     new_floats.erase(new_floats.find(c)); // Remove one occurrence of the character
+        //     findWord(index + 1, input, new_floats, dict, results); //feed in next as the floating argument
+        // }
+
+        // //condition is necessary to make efficient
+        // if(numDashes(input) >= floating.size()) //if there are more dashes than letters left to guess from...
+        // {
+        //     for(char c = 'a'; c <= 'z'; c++) //now guess through alphabet, since its not a floating letter
+        //     {
+        //         input[index] = c; //guess the letter
+        //         findWord(index + 1, input, floating, dict, results); //recurse again
+        //     }
+        }
+    // }
     
 }
 
-int numDashes(const std::string& word)
-{
-    int num = 0;
-    for(int i = 0; i < word.length(); i++)
-    {
-        num += (int)(word[i] == '-');
-    }
-    return num;
-}
+// int numDashes(const std::string& word)
+// {
+//     int num = 0;
+//     for(int i = 0; i < word.length(); i++)
+//     {
+//         num += (int)(word[i] == '-');
+//     }
+//     return num;
+// }
 
