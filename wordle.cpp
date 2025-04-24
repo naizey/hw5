@@ -23,7 +23,7 @@ set<string> wordle(const string& in, const string& floating, const set<string>& 
     return results; 
 }
 
-int numDashes(const std::string& word, int index)
+int numDashes(const std::string& word)
 {
     int num = 0;
     for(int i = 0; i < word.length(); i++)
