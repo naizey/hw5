@@ -41,7 +41,7 @@ void findWord(unsigned int index, std::string input, std::string floating, const
     if(index == input.size()) 
     {
         //if all the floating letters are used and if current is a valid word
-        if(floating.empty() == 0 && dict.find(input) != dict.end()) 
+        if(floating.length() == 0 && dict.find(input) != dict.end()) 
         {
             //add to results
             results.insert(input);
@@ -53,7 +53,7 @@ void findWord(unsigned int index, std::string input, std::string floating, const
     if(input[index] != '-') 
     {
         //go to next letter
-        findWord(index + 1, input, floating, dict, results);
+        findWord(index + 1, input, floating, dict, results); //decrease problem size
         //return; //added a return to kick out
     }
 
