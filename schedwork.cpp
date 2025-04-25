@@ -21,7 +21,7 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 
 // Add prototypes for any helper functions here
-bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, map<Worker_T, size_t>& shifts);
+bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, map<Worker_T, size_t>& shifts, size_t row, size_t col);
 
 
 // Add your implementation of schedule() and other helper functions here
@@ -55,18 +55,18 @@ bool schedule(
         shifts[worker] = 0;
     }
 
-    return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts);
+    return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, 0, 0);
 
 
 }
 
-bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, map<Worker_T, size_t>& shifts)
+bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, map<Worker_T, size_t>& shifts, size_t day, size_t col)
 {
-    int row = 0; //day rows
-    int col = 0; //worker columns. only dailyneed per day
+    // int row = 0; //day rows
+    // int col = 0; //worker columns. only dailyneed per day
 
     //base case - if all the days are filled
-    if(row == sched.size())
+    if(day == sched.size())
     {
         return true;
     }
@@ -74,30 +74,28 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     //make sure if we have reached the daily need, or all workers are filled, go to next day
     if(col == dailyNeed) //d
     {
-        row++;
-        return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts);
+        return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, day+1, 0);
     }
 
     //assign workers into initialized schedule
     for(size_t worker = 0; worker < avail[0].size(); worker++)
     {
         //is the worker available and is maxShifts not reached yet?
-        if(avail[row][worker] && shifts[worker] < maxShifts) //if so, add worker into schedule
+        if(avail[day][worker] && shifts[worker] < maxShifts) //if so, add worker into schedule
         {
             //worker is free and max shifts is not reached yet
-            sched[row][col] = worker;
+            sched[day][col] = worker;
             shifts[worker]++; //shift count increases for worker
 
             //next column
-            col++;
-            if(scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts))
+            if(scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, day, col+1))
             {
                 return true;
             }
 
             //backtrack:
             //remove worker from schedule
-            sched[row][col] = INVALID_ID; 
+            sched[day][col] = INVALID_ID; 
             //decrease their shift count
             shifts[worker]--; 
         }
