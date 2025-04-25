@@ -40,17 +40,20 @@ bool schedule(
     // Add your code below
 
     //if availability is empty
-    if(avail.empty())
+    if(avail.empty() || avail[0].empty())
     {
         return false;
     }
 
-    sched.assign(avail.size(), vector<Worker_T>(dailyNeed, INVALID_ID));
+    size_t numDays = avail.size();
+    size_t numWorkers = avail[0].size();
+
+    sched.assign(numDays, vector<Worker_T>(dailyNeed, INVALID_ID));
 
     //want to map the worker to their shifts
     map<Worker_T, size_t> shifts; 
     //traverse through workers in availability 
-    for(size_t worker = 0; worker < avail[0].size(); worker++)
+    for(size_t worker = 0; worker < numWorkers; worker++)
     {
         shifts[worker] = 0;
     }
@@ -81,7 +84,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     for(size_t worker = 0; worker < avail[0].size(); worker++)
     {
         //is the worker available and is maxShifts not reached yet?
-        if(avail[day][worker] && shifts[worker] < maxShifts) //if so, add worker into schedule
+        if(avail[day][worker] && shifts[worker] < maxShifts && std::find(sched[day].begin(), sched[day].end(), worker) == sched[day].end()) //if so, add worker into schedule
         {
             //worker is free and max shifts is not reached yet
             sched[day][col] = worker;
