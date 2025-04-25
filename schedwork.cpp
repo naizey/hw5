@@ -48,12 +48,12 @@ bool schedule(
     //want to map the worker to their shifts
     map<Worker_T, size_t> shifts; 
     //traverse through workers in availability 
-    for(size_t worker = 0; i < avail[0].size(); worker++)
+    for(size_t worker = 0; worker < avail[0].size(); worker++)
     {
         shifts[worker] = 0;
     }
 
-    return scheduleHelper(avail, dailyNeed, maxShifts, shifts, sched);
+    return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts);
 
 
 }
@@ -64,7 +64,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     int col = 0; //worker columns. only dailyneed per day
 
     //base case - if all the days are filled
-    if(day == sched.size())
+    if(row == sched.size())
     {
         return true;
     }
@@ -72,7 +72,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     //make sure if we have reached the daily need, or all workers are filled, go to next day
     if(col == dailyNeed) //d
     {
-        day++;
+        row++;
         return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts);
     }
 
@@ -95,7 +95,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
 
             //backtrack:
             //remove worker from schedule
-            shched[row][col] = INVALID_ID; 
+            sched[row][col] = INVALID_ID; 
             //decrease their shift count
             shifts[worker]--; 
         }
