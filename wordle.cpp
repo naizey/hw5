@@ -13,8 +13,7 @@ using namespace std;
 
 
 // Add prototypes of helper functions here
-void findWord(std::string input, std::multiset<char> floating, const std::set<std::string>& dict, std::set<std::string>& results, size_t dash_count);
-int numDashes(const std::string& word);
+void findWord(std::string input, std::multiset<char> floating, const std::set<std::string>& dict, std::set<std::string>& results, size_t dash_count); 
 
 set<string> wordle(const string& in, const string& floating, const set<string>& dict)
 {
@@ -88,7 +87,7 @@ void findWord(std::string input, std::multiset<char> floating, const std::set<st
             }
             findWord(input, floating, dict, results, dash_count); //feed in next as the floating argument
 
-            if(deleted)
+            if(deleted) //put the letter back if it was deleted
             {
                 floating.insert(c);
             }
