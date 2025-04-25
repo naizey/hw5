@@ -76,7 +76,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     //int workerCount = 0; //increment the number of workers scheduled 
 
     //base case - if all the days are filled (up til last day and all workers filled)
-    if(day == avail.size() && worker == 0)
+    if(day == avail.size())
     {
         return true;
     }
@@ -87,26 +87,52 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     }
 
     //assign workers into initialized schedule
-    for(size_t w = 0; w < avail[0].size(); w++)
+    for(size_t w = 0; w < avail[day].size(); w++)
     {
         // if(find(sched[day].begin(), sched[day].end(), w) != sched[day].end()) //if the worker is already scheduled
         // {
         //     continue; //skip to next worker
         // }
         //is the worker available and is maxShifts not reached yet?
-        if(avail[day][w] && shifts[w] < maxShifts && std::find(sched[day].begin(), sched[day].end(), w) == sched[day].end()) //if so, add worker into schedule
+        if(avail[day][w] && shifts[w] < maxShifts) //if so, add worker into schedule
         {
             //worker is free and max shifts is not reached yet
-            sched[day][worker] = w;
-            shifts[w]++; //shift count increases for worker
-            //workerCount++;
-            //checks if the workers working is less than the daily need, NEED MORE WORKERS
-            // if(workerCount < dailyNeed)
-            // {
+            bool assigned = false;
+            for(size_t i = 0; i < worker; i++)
+            {
+                if(sched[day][i] == w)
+                {
+                    assigned = true; //worker is aready assigned don't assign again
+                    break;
+                }
+            }
+
+            if(!assigned)
+            {
+                sched[day][worker] = w; //add worker to schedule
+                shifts[w]++; //increment the shift count for the worker
+            
+
                 if(scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, day, worker + 1))
                 {
                     return true;
                 }
+
+                //backtrack:
+                sched[day][worker] = INVALID_ID; //remove the worker from the schedule
+                //remove worker from schedule
+                shifts[w]--;
+            }
+            // sched[day][worker] = w;
+            // shifts[w]++; //shift count increases for worker
+            // //workerCount++;
+            //checks if the workers working is less than the daily need, NEED MORE WORKERS
+            // if(workerCount < dailyNeed)
+            // {
+                // if(scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, day, worker + 1))
+                // {
+                //     return true;
+                // }
             // }
             //if we have the amount we need, go to next day
             // else if(workerCount == dailyNeed)
@@ -120,10 +146,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
             
         }
 
-        //backtrack:
-        sched[day][worker] = INVALID_ID; //remove the worker from the schedule
-        //remove worker from schedule
-        shifts[w]--;
+        
         //decrease their shift count
         //workerCount--;
     }
