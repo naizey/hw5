@@ -84,17 +84,21 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
     //assign workers into initialized schedule
     for(size_t w = next_worker; w < avail[0].size(); w++)
     {
-        //worker is free and max shifts is not reached yet
-        sched[day][worker] = w;
-        shifts[w]++; //shift count increases for worker
-        workerCount++;
-        //is the worker available and is maxShifts not reached yet?
-        if(avail[day][w] && shifts[w] <= maxShifts) //if so, add worker into schedule
+        if(find(sched[day].begin(), sched[day].end(), w) != sched[day].end()) //if the worker is already scheduled
         {
+            continue; //skip to next worker
+        }
+        //is the worker available and is maxShifts not reached yet?
+        if(avail[day][w] && shifts[w] < maxShifts) //if so, add worker into schedule
+        {
+            //worker is free and max shifts is not reached yet
+            sched[day][worker] = w;
+            shifts[w]++; //shift count increases for worker
+            workerCount++;
             //checks if the workers working is less than the daily need, NEED MORE WORKERS
             if(workerCount < dailyNeed)
             {
-                if(scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, w+1, workerCount, day, worker + 1))
+                if(scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, 0, workerCount, day, worker + 1))
                 {
                     return true;
                 }
@@ -112,8 +116,9 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
         }
 
         //backtrack:
+        sched[day][worker] = INVALID_ID; //remove the worker from the schedule
         //remove worker from schedule
-        shifts[worker]--;
+        shifts[w]--;
         //decrease their shift count
         workerCount--;
     }
