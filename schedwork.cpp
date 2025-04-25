@@ -48,7 +48,7 @@ bool schedule(
     size_t numDays = avail.size();
     size_t numWorkers = avail[0].size();
 
-    sched.assign(numDays, vector<Worker_T>(dailyNeed, INVALID_ID));
+    DailySchedule temp(numDays, vector<Worker_T>(dailyNeed, INVALID_ID));
 
     //want to map the worker to their shifts
     map<Worker_T, size_t> shifts; 
@@ -58,7 +58,13 @@ bool schedule(
         shifts[worker] = 0;
     }
 
-    return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, 0, 0);
+    if(scheduleHelper(avail, dailyNeed, maxShifts, temp, shifts, 0, 0))
+    {
+        sched = temp; //if the schedule is valid
+        return true;
+    }
+
+    return false;
 
 
 }
