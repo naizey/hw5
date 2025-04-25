@@ -45,6 +45,8 @@ bool schedule(
         return false;
     }
 
+    sched.assign(avail.size(), vector<Worker_T>(dailyNeed, INVALID_ID));
+
     //want to map the worker to their shifts
     map<Worker_T, size_t> shifts; 
     //traverse through workers in availability 
@@ -83,7 +85,7 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
         if(avail[row][worker] && shifts[worker] < maxShifts) //if so, add worker into schedule
         {
             //worker is free and max shifts is not reached yet
-            sched[row].push_back(worker);
+            sched[row][col] = worker;
             shifts[worker]++; //shift count increases for worker
 
             //next column
