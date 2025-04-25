@@ -21,7 +21,7 @@ static const Worker_T INVALID_ID = (unsigned int)-1;
 
 
 // Add prototypes for any helper functions here
-bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, map<Worker_T, size_t>& shifts, /*size_t next_worker, size_t workerCount, */size_t day, size_t worker);
+bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, vector<size_t>& shifts, /*size_t next_worker, size_t workerCount, */size_t day, size_t worker);
 
 
 // Add your implementation of schedule() and other helper functions here
@@ -39,7 +39,8 @@ bool schedule(
     sched.clear();
     // Add your code below
 
-    size_t numWorkers = avail[0].size(); //number of workers
+    const size_t numDays = avail.size(); //number of days
+    const size_t numWorkers = avail[0].size(); //number of workers
 
     //if the daily need is greater than the number of workers available, can't make valid sched
     if(numWorkers < dailyNeed)
@@ -47,31 +48,36 @@ bool schedule(
         return false;
     }
 
-    //want to map the worker to their shifts
-    map<Worker_T, size_t> shifts; 
-    //traverse through workers in availability 
-    for(size_t worker = 0; worker < numWorkers; worker++)
+    // //want to map the worker to their shifts
+    // map<Worker_T, size_t> shifts; 
+    // //traverse through workers in availability 
+    // for(size_t worker = 0; worker < numWorkers; worker++)
+    // {
+    //     shifts[worker] = 0;
+    // }
+
+    sched.resize(numDays); //set to num days
+
+    for(size_t i = 0; i < sched.size(); i++)
     {
-        shifts[worker] = 0;
+        sched[i].resize(dailyNeed, INVALID_ID);
+        // vector<Worker_T> temp;
+        // sched.push_back(temp); //push back for each day
+        // for(size_t j = 0; j < dailyNeed; j++)
+        // {
+        //     sched[i].push_back(INVALID_ID); //initialize the schedule with invalid id
+        // }
+
     }
 
-    for(unsigned long int i = 0; i < avail.size(); i++)
-    {
-        vector<Worker_T> temp;
-        sched.push_back(temp); //push back for each day
-        for(size_t j = 0; j < dailyNeed; j++)
-        {
-            sched[i].push_back(INVALID_ID); //initialize the schedule with invalid id
-        }
-
-    }
+    vector<size_t> shifts(numWorkers, 0);
 
     return scheduleHelper(avail, dailyNeed, maxShifts, sched, shifts, /*0, 0,*/ 0, 0);
 
 
 }
 
-bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, map<Worker_T, size_t>& shifts, /*size_t next_worker, size_t workerCount, */size_t day, size_t worker)
+bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, const size_t maxShifts, DailySchedule& sched, vector<size_t>& shifts, /*size_t next_worker, size_t workerCount, */size_t day, size_t worker)
 {
     //int workerCount = 0; //increment the number of workers scheduled 
 
@@ -98,12 +104,11 @@ bool scheduleHelper(const AvailabilityMatrix& avail, const size_t dailyNeed, con
         {
             //worker is free and max shifts is not reached yet
             bool assigned = false;
-            for(size_t i = 0; i < worker; i++)
+            for(size_t i = 0; i < worker && !assigned; i++)
             {
                 if(sched[day][i] == w)
                 {
                     assigned = true; //worker is aready assigned don't assign again
-                    break;
                 }
             }
 
